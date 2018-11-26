@@ -1,0 +1,22 @@
+{
+  "name": "entrance-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "test",
+    "dev": "nodemon src/server.js"
+  },
+  "author": "Stefan Milenkovic",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mongodb": "^2.2.16",
+    "mongoose": "^5.3.13"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
