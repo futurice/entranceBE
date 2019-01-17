@@ -10,10 +10,13 @@ module.exports = function(app, db) {
 			});
 		}
 
-		const meeting = new Meeting({
+		const meeting =
+			new Meeting({
 			host: req.body.host,
 			meeting: req.body.meeting,
-			room: req.body.room
+			room: req.body.room,
+			phone: req.body.phone,
+			date: req.body.date
 		});
 
 		// Save Meeting in the database
@@ -55,6 +58,19 @@ module.exports = function(app, db) {
 			}
 			return res.status(500).send({
 				message: "Could not delete meeting with id " + req.params.id
+			});
+		});
+	});
+
+	//todo remove after dev finished
+	app.delete('/meetings/', (req, res) => {
+		Meeting.remove({}).then(() => {
+			res.status(200).send({
+				message: "All meetings deleted"
+			});
+		}).catch(err => {
+			res.status(500).send({
+				message: err.message || "Some error occurred while deleting meetings."
 			});
 		});
 	});
