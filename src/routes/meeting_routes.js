@@ -18,6 +18,7 @@ module.exports = function(app, db) {
 			phone: req.body.phone,
 			date: req.body.date
 		});
+		
 
 		// Save Meeting in the database
 		meeting.save()
