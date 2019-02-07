@@ -4,7 +4,7 @@ const Meeting = require('../models/meeting.model.js')
 module.exports = function(app, db) {
 
 	app.post('/meetings', (req, res) => {
-		if(!req.body.host || !req.body.meeting || !req.body.room) {
+		if(!req.body.host || !req.body.meeting) {
 			return res.status(400).send({
 				message: "Meeting content can not be empty"
 			});
@@ -14,11 +14,10 @@ module.exports = function(app, db) {
 			new Meeting({
 			host: req.body.host,
 			meeting: req.body.meeting,
-			room: req.body.room,
 			phone: req.body.phone,
 			date: req.body.date
 		});
-		
+
 
 		// Save Meeting in the database
 		meeting.save()

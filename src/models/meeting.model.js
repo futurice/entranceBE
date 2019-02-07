@@ -4,7 +4,6 @@ const MeetingSchema = mongoose.Schema({
 	host: String,
 	phone: String,
 	meeting: String,
-	room: String,
 	date: String
 }, {
 	timestamps: true
