@@ -1,12 +1,10 @@
 version: "3"
 services:
   mongo:
-    container_name: mongo
     image: mongo
     volumes:
       - /data/db
   app:
-    container_name: app
     restart: always
     build: .
     ports:
@@ -15,5 +13,3 @@ services:
       - mongo
     links:
       - mongo
-      
-  
