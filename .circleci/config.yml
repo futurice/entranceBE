@@ -1,0 +1,47 @@
+# -----------------------------------------------------------
+# Expects the following environment variables in CircleCI:
+# - AWS_ACCESS_KEY_ID
+# - AWS_ECR_ACCOUNT_URL
+# - AWS_ECR_REPOSITORY_NAME
+# - AWS_REGION
+# - AWS_SECRET_ACCESS_KEY
+# Make sure to create a dedicated IAM user for this!
+# -----------------------------------------------------------
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: Install Dependencies
+          command: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+#     - run:
+#         name: Run Tests
+#         command: yarn test
+
+orbs:
+  aws-ecr: circleci/aws-ecr@3.0.0
+
+workflows:
+  test-and-push:
+    jobs:
+      - test
+      - aws-ecr/build_and_push_image:
+          repo: '${AWS_ECR_REPOSITORY_NAME}'
+          tag: '${CIRCLE_SHA1}'
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
