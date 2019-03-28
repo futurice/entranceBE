@@ -6,7 +6,11 @@ services:
       - /data/db
   app:
     restart: always
-    build: .
+    image: node:10-alpine
+    command: yarn dev
+    working_dir: /tmp/src
+    volumes:
+      - .:/tmp/src
     ports:
       - "8000:8000"
     depends_on:
