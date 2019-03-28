@@ -32,6 +32,7 @@ jobs:
 
 orbs:
   aws-ecr: circleci/aws-ecr@3.0.0
+  aws-ecs: circleci/aws-ecs@0.0.6
 
 workflows:
   test-and-push:
@@ -42,6 +43,16 @@ workflows:
           tag: '${CIRCLE_SHA1}'
           requires:
             - test
+          filters:
+            branches:
+              only: master
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build_and_push_image
+          family: '${AWS_ECS_TASK_DEFINITION_NAME}'
+          cluster-name: '${AWS_ECS_CLUSTER_NAME}'
+          service-name: '${AWS_ECS_SERVICE_NAME}'
+          container-image-name-updates: 'container=${AWS_ECS_CONTAINER_NAME},tag=${CIRCLE_SHA1}'
           filters:
             branches:
               only: master
