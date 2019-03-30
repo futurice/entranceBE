@@ -1,3 +1,3 @@
-module.exports = {
+export default {
   url: 'mongodb://mongo:27017/entrance-app',
 };

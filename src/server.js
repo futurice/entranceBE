@@ -1,37 +1,37 @@
-const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
-const bodyParser = require('body-parser');
-const app = express();
-const cors = require('cors');
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
+import mongoose from 'mongoose';
 
-module.exports = () => {
-const port = 8000;
+import dbConfig from './config/db.config.js';
+import routes from './routes';
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
+export default () => {
+  const app = express();
+  const port = 8000;
 
-// Configuring the database
-const dbConfig = require('./config/db.config.js');
-const mongoose = require('mongoose');
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+  app.use(cors());
 
-mongoose.Promise = global.Promise;
+  // Configuring the database
+  mongoose.Promise = global.Promise;
 
-// Connecting to the database
-mongoose
-  .connect(dbConfig.url, {
-    useNewUrlParser: true,
-  })
-  .then(() => {
-    console.log('Successfully connected to the database');
-  })
-  .catch(err => {
-    console.log('Could not connect to the database. Exiting now...', err);
-    process.exit();
+  // Connecting to the database
+  mongoose
+    .connect(dbConfig.url, {
+      useNewUrlParser: true,
+    })
+    .then(() => {
+      console.log('Successfully connected to the database');
+    })
+    .catch(err => {
+      console.log('Could not connect to the database. Exiting now...', err);
+      process.exit();
+    });
+
+  routes(app, {});
+  app.listen(port, () => {
+    console.log('We are live on ' + port);
   });
-
-require('./routes')(app, {});
-app.listen(port, () => {
-  console.log('We are live on ' + port);
-});
 };
