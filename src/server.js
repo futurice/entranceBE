@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const cors = require('cors');
 
+module.exports = () => {
 const port = 8000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,3 +34,4 @@ require('./routes')(app, {});
 app.listen(port, () => {
   console.log('We are live on ' + port);
 });
+};
