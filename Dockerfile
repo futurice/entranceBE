@@ -5,4 +5,5 @@ WORKDIR /opt/app
 COPY package.json yarn.lock ./
 RUN yarn
 COPY src src
-CMD node src/server.js
+RUN yarn build
+CMD node build

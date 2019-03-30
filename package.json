@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "build": "babel src -d build",
     "dev": "nodemon --exec babel-node src/index.js",
     "prettier": "prettier --write",
     "test": "test"
