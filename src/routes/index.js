@@ -1,6 +1,7 @@
-const meetingRoutes = require('./meeting_routes');
-const healthRoutes = require('./health');
-module.exports = function(app, db) {
+import meetingRoutes from './meeting_routes';
+import healthRoutes from './health';
+
+export default (app, db) => {
 	meetingRoutes(app, db);
 	healthRoutes(app);
 };

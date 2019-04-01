@@ -1,6 +1,6 @@
-const Meeting = require('../models/meeting.model.js');
+import Meeting from '../models/meeting.model.js';
 
-module.exports = function(app, db) {
+export default (app, db) => {
   app.post('/meetings', (req, res) => {
     if (!req.body.host || !req.body.meeting) {
       return res.status(400).send({
