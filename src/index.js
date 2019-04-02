@@ -1,3 +1,4 @@
+import config from './config';
 import server from './server';
 
-server();
+server(config);

@@ -3,12 +3,10 @@ import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
 
-import dbConfig from './config/db.config.js';
 import routes from './routes';
 
-export default () => {
+export default ({ port, db }) => {
   const app = express();
-  const port = 8000;
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
@@ -19,7 +17,7 @@ export default () => {
 
   // Connecting to the database
   mongoose
-    .connect(dbConfig.url, {
+    .connect(db.url, {
       useNewUrlParser: true,
     })
     .then(() => {
