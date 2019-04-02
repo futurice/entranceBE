@@ -20,5 +20,6 @@ const db = {
 // --- Configuration
 export default {
   db,
+  development: env('NODE_ENV', 'development') === 'development',
   port: envInt('PORT', '8000'),
 };
