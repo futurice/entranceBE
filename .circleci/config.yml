@@ -26,9 +26,12 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-#     - run:
-#         name: Run Tests
-#         command: yarn test
+      - run:
+          name: Create Production Build
+          command: yarn build
+      - run:
+          name: Verify Production Build
+          command: node --check build
 
 orbs:
   aws-ecr: circleci/aws-ecr@3.0.0
