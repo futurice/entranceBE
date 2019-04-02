@@ -1,35 +1,32 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
-import mongoose from 'mongoose';
 
-import routes from './routes';
+import connectDb from './db';
+import addRoutes from './routes';
 
-export default ({ port, db }) => {
+const shutdown = async (server, { database }) => {
+  await server.close();
+  await database.shutdown();
+}
+
+export default async ({ port, db }) => {
+  // --- Infrastructure
+  const database = await connectDb(db);
+  const system = { database };
+
+  // --- Server
   const app = express();
-
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(cors());
+  addRoutes(app, system);
 
-  // Configuring the database
-  mongoose.Promise = global.Promise;
-
-  // Connecting to the database
-  mongoose
-    .connect(db.url, {
-      useNewUrlParser: true,
-    })
-    .then(() => {
-      console.log('Successfully connected to the database');
-    })
-    .catch(err => {
-      console.log('Could not connect to the database. Exiting now...', err);
-      process.exit();
-    });
-
-  routes(app, {});
-  app.listen(port, () => {
-    console.log('We are live on ' + port);
-  });
+  // --- Startup
+  const server = await app.listen(port);
+  const actualPort = server.address().port;
+  return {
+    port: actualPort,
+    shutdown: () => shutdown(server, system),
+  };
 };

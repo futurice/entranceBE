@@ -20,5 +20,5 @@ const db = {
 // --- Configuration
 export default {
   db,
-  port: envInt('PORT', '8080'),
+  port: envInt('PORT', '8000'),
 };

@@ -1,6 +1,6 @@
-import Meeting from '../models/meeting.model.js';
+import Meeting from '../db/models/meeting';
 
-export default (app, db) => {
+export default (app, _) => {
   app.post('/meetings', (req, res) => {
     if (!req.body.host || !req.body.meeting) {
       return res.status(400).send({
@@ -28,7 +28,8 @@ export default (app, db) => {
         });
       });
   });
-  app.get('/meetings', (req, res) => {
+
+  app.get('/meetings', (_, res) => {
     Meeting.find()
       .then(meetings => {
         res.send(meetings);
