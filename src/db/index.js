@@ -16,8 +16,18 @@ const connect = async ({ url }) => {
   };
 };
 
+// --- Helpers
+const rangeToday = clock => ({
+  $gte: clock.today(),
+  $lt: clock.endOfToday(),
+});
+
+const rangeUpcoming = clock => ({
+  $gte: clock.today(),
+});
+
 // --- Database Operations
-const Meeting = {
+const Meeting = clock => ({
   clear: () => MeetingModel.remove({}),
   create: data => new MeetingModel(data).save(),
   delete: async id => {
@@ -27,14 +37,16 @@ const Meeting = {
     }
   },
   list: () => MeetingModel.find(),
-};
+  listToday: () => MeetingModel.find({ date: rangeToday(clock) }),
+  listUpcoming: () => MeetingModel.find({ date: rangeUpcoming(clock) }),
+});
 
 // --- Database Facade
-export default async config => {
+export default async (config, clock) => {
   const database = await connect(config);
 
   return {
     ...database,
-    Meeting,
+    Meeting: Meeting(clock),
   };
 };

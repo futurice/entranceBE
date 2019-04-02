@@ -1,5 +1,4 @@
 export default (app, { database: { Meeting } }) => {
-
   app.post('/meetings', async (req, res) => {
     const { host, meeting, phone, date } = req.body;
 
@@ -18,6 +17,16 @@ export default (app, { database: { Meeting } }) => {
     res.send(meetings);
   });
 
+  app.get('/meetings/q/today', async (_, res) => {
+    const meetings = await Meeting.listToday();
+    res.send(meetings);
+  });
+
+  app.get('/meetings/q/upcoming', async (_, res) => {
+    const meetings = await Meeting.listUpcoming();
+    res.send(meetings);
+  });
+
   app.delete('/meetings/:id', async (req, res) => {
     const { id } = req.params;
     await Meeting.delete(id);
@@ -29,5 +38,4 @@ export default (app, { database: { Meeting } }) => {
     await Meeting.clear();
     res.send({ message: 'All meetings deleted' });
   });
-
 };
