@@ -5,7 +5,7 @@ const MeetingSchema = mongoose.Schema(
     host: String,
     phone: String,
     meeting: String,
-    date: String,
+    date: Date,
   },
   {
     timestamps: true,

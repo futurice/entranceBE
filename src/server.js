@@ -4,7 +4,6 @@ import express from 'express';
 import 'express-async-errors';
 import morgan from 'morgan';
 
-import connectDb from './db';
 import addRoutes from './routes';
 
 const errorLogger = (err, req, res, _next) => {
@@ -17,11 +16,7 @@ const shutdown = async (server, { database }) => {
   await database.shutdown();
 }
 
-export default async ({ development, port, db }) => {
-  // --- Infrastructure
-  const database = await connectDb(db);
-  const system = { database };
-
+export default async ({ development, port }, system) => {
   // --- Server
   const app = express();
   app.use(morgan(development ? 'dev' : 'combined'));
