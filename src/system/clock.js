@@ -1,6 +1,12 @@
 import moment from 'moment';
 
-export default ()=> ({
-  today: () => moment().startOf('day').toDate(),
-  endOfToday: () => moment().endOf('day').toDate(),
+export default (now = moment) => ({
+  today: () =>
+    now()
+      .startOf('day')
+      .toDate(),
+  endOfToday: () =>
+    now()
+      .endOf('day')
+      .toDate(),
 });
