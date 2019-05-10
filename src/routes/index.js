@@ -14,7 +14,7 @@ const withContext = (defaults = {}) => (req, _, next) => {
 };
 
 const withSystem = system => (req, _, next) => {
-  req.system = system;
+  req.system = system(req.systemContext);
   next();
 };
 
@@ -25,9 +25,10 @@ export default (app, system) => {
   const health = healthRoutes();
 
   // Legacy Routes
+  // FIXME: remove after clients have migrated
   app.use(withContext({ office: 'munich' }), withSystem(system), meetings);
 
   // Routes
-  app.use('/:office/*', withContext(), withSystem(system), meetings);
+  app.use('/:office', withContext(), withSystem(system), meetings);
   app.use(health);
 };

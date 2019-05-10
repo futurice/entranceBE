@@ -26,27 +26,41 @@ const rangeUpcoming = clock => ({
   $gte: clock.today(),
 });
 
+const matchOffice = office =>
+  // FIXME: remove after clients have migrated
+  office === 'munich' ? [office, null] : office;
+
 // --- Database Operations
-const Meeting = clock => ({
-  clear: () => MeetingModel.remove({}),
-  create: data => new MeetingModel(data).save(),
-  delete: async id => {
-    const meeting = await MeetingModel.findByIdAndRemove(id);
-    if (!meeting) {
-      throw new Error(`Meeting not found: ${id}`);
-    }
-  },
-  list: () => MeetingModel.find(),
-  listToday: () => MeetingModel.find({ date: rangeToday(clock) }),
-  listUpcoming: () => MeetingModel.find({ date: rangeUpcoming(clock) }),
-});
+const Meeting = ({ office }, clock) => {
+  const filters = { office: matchOffice(office) };
+
+  return {
+    clear: () => MeetingModel.remove({}),
+
+    create: data => new MeetingModel({ ...data, office }).save(),
+
+    delete: async id => {
+      const meeting = await MeetingModel.findByIdAndRemove(id);
+      if (!meeting) {
+        throw new Error(`Meeting not found: ${id}`);
+      }
+    },
+
+    list: () => MeetingModel.find(filters),
+
+    listToday: () => MeetingModel.find({ date: rangeToday(clock), ...filters }),
+
+    listUpcoming: () =>
+      MeetingModel.find({ date: rangeUpcoming(clock), ...filters }),
+  };
+};
 
 // --- Database Facade
 export default async (config, clock) => {
   const database = await connect(config);
 
-  return {
+  return context => ({
     ...database,
-    Meeting: Meeting(clock),
-  };
+    Meeting: Meeting(context, clock),
+  });
 };
