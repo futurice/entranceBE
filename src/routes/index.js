@@ -1,15 +1,33 @@
-import { Router } from 'express';
-
 import meetingRoutes from './meetings';
 import healthRoutes from './health';
 
-export default (app, system) => {
-  // --- General Routes
-  meetingRoutes(app, system); // Remove once no longer needed
-  healthRoutes(app);
+// --- Middlewares
+const withContext = (defaults = {}) => (req, _, next) => {
+  const { office } = req.params;
 
-  // --- Office Routes
-  const office = new Router();
-  meetingRoutes(office, system);
-  app.use('/:office', office);
+  req.systemContext = {
+    ...req.systemContext,
+    office: office || defaults.office,
+  };
+
+  next();
+};
+
+const withSystem = system => (req, _, next) => {
+  req.system = system;
+  next();
+};
+
+// --- Routes
+export default (app, system) => {
+  // Routers
+  const meetings = meetingRoutes();
+  const health = healthRoutes();
+
+  // Legacy Routes
+  app.use(withContext({ office: 'munich' }), withSystem(system), meetings);
+
+  // Routes
+  app.use('/:office/*', withContext(), withSystem(system), meetings);
+  app.use(health);
 };
