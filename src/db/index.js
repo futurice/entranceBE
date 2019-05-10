@@ -46,12 +46,17 @@ const Meeting = ({ office }, clock) => {
       }
     },
 
-    list: () => MeetingModel.find(filters),
+    list: () => MeetingModel.find(filters).sort({ date: 1 }),
 
-    listToday: () => MeetingModel.find({ date: rangeToday(clock), ...filters }),
+    listToday: () =>
+      MeetingModel.find({ date: rangeToday(clock), ...filters }).sort({
+        date: 1,
+      }),
 
     listUpcoming: () =>
-      MeetingModel.find({ date: rangeUpcoming(clock), ...filters }),
+      MeetingModel.find({ date: rangeUpcoming(clock), ...filters }).sort({
+        date: 1,
+      }),
   };
 };
 
