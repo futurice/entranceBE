@@ -5,5 +5,5 @@ export default async ({ db }) => {
   const clockInst = clock();
   const database = await connectDb(db, clockInst);
 
-  return { clock, database };
+  return context => ({ clock: clockInst, database: database(context) });
 };

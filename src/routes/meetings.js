@@ -1,4 +1,9 @@
-export default (app, { database: { Meeting } }) => {
+import { Router } from 'express';
+
+export default () => {
+  const app = new Router();
+  const Meeting = req => req.system.database.Meeting;
+
   app.post('/meetings', async (req, res) => {
     const { host, meeting, phone, date } = req.body;
 
@@ -8,34 +13,36 @@ export default (app, { database: { Meeting } }) => {
       });
     }
 
-    const created = await Meeting.create({ host, meeting, phone, date });
+    const created = await Meeting(req).create({ host, meeting, phone, date });
     res.send(created);
   });
 
-  app.get('/meetings', async (_, res) => {
-    const meetings = await Meeting.list();
+  app.get('/meetings', async (req, res) => {
+    const meetings = await Meeting(req).list();
     res.send(meetings);
   });
 
-  app.get('/meetings/q/today', async (_, res) => {
-    const meetings = await Meeting.listToday();
+  app.get('/meetings/q/today', async (req, res) => {
+    const meetings = await Meeting(req).listToday();
     res.send(meetings);
   });
 
-  app.get('/meetings/q/upcoming', async (_, res) => {
-    const meetings = await Meeting.listUpcoming();
+  app.get('/meetings/q/upcoming', async (req, res) => {
+    const meetings = await Meeting(req).listUpcoming();
     res.send(meetings);
   });
 
   app.delete('/meetings/:id', async (req, res) => {
     const { id } = req.params;
-    await Meeting.delete(id);
+    await Meeting(req).delete(id);
     res.send({ message: 'Meeting deleted successfully!' });
   });
 
   //todo remove after dev finished
-  app.delete('/meetings/', async (_, res) => {
-    await Meeting.clear();
+  app.delete('/meetings/', async (req, res) => {
+    await Meeting(req).clear();
     res.send({ message: 'All meetings deleted' });
   });
+
+  return app;
 };

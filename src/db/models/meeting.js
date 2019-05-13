@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const MeetingSchema = mongoose.Schema(
   {
+    office: String,
     host: String,
     phone: String,
     meeting: String,
