@@ -1,7 +1,34 @@
 import meetingRoutes from './meetings';
 import healthRoutes from './health';
 
+// --- Middlewares
+const withContext = (defaults = {}) => (req, _, next) => {
+  const { office } = req.params;
+
+  req.systemContext = {
+    ...req.systemContext,
+    office: office || defaults.office,
+  };
+
+  next();
+};
+
+const withSystem = system => (req, _, next) => {
+  req.system = system(req.systemContext);
+  next();
+};
+
+// --- Routes
 export default (app, system) => {
-  meetingRoutes(app, system);
-  healthRoutes(app);
+  // Routers
+  const meetings = meetingRoutes();
+  const health = healthRoutes();
+
+  // Legacy Routes
+  // FIXME: remove after clients have migrated
+  app.use(withContext({ office: 'munich' }), withSystem(system), meetings);
+
+  // Routes
+  app.use('/:office', withContext(), withSystem(system), meetings);
+  app.use(health);
 };
